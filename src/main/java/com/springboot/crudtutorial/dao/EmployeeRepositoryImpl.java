@@ -10,10 +10,10 @@ import java.util.List;
 @Repository
 public class EmployeeRepositoryImpl implements EmployeeRepository{
     private static final String INSERT_EMPLOYEE_QUERY = "INSERT INTO EMPLOYEE(id, fname, lname, email) VALUES(?,?,?,?)";
-    private static final String UPDATE_EMPLOYEE_BY_ID_QUERY="UPADTE USER SET fname=? WHERE ID=?";
-    private static final String GET_EMPLOYEE_BY_ID_QUERY="SELECT * FROM USER WHERE ID=?";
-    private static final String DELETE_EMPLOYEE_BY_ID="DELETE FROM USER WHERE ID=?";
-    private static final String GET_EMPLOYEES_QUERY="SELECT * FROM USER";
+    private static final String UPDATE_EMPLOYEE_BY_ID_QUERY="UPDATE EMPLOYEE SET fname=? WHERE ID=?";
+    private static final String GET_EMPLOYEE_BY_ID_QUERY="SELECT * FROM EMPLOYEE WHERE ID=?";
+    private static final String DELETE_EMPLOYEE_BY_ID="DELETE FROM EMPLOYEE WHERE ID=?";
+    private static final String GET_EMPLOYEES_QUERY="SELECT * FROM EMPLOYEE";
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Override
@@ -32,7 +32,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository{
     public Employee getEmployeeById(int id) {
         return jdbcTemplate.queryForObject(GET_EMPLOYEE_BY_ID_QUERY, (rs, rowNum) -> {
             return new Employee(rs.getInt("id"), rs.getString("fname"), rs.getString("lname"), rs.getString("email"));
-        });
+        }, id);
     }
 
     @Override
@@ -43,8 +43,8 @@ public class EmployeeRepositoryImpl implements EmployeeRepository{
 
     @Override
     public List<Employee> allEmployees() {
-        return Collections.singletonList(jdbcTemplate.queryForObject(GET_EMPLOYEES_QUERY, (rs, rowNum) -> {
+        return jdbcTemplate.query(GET_EMPLOYEES_QUERY, (rs, rowNum) -> {
             return new Employee(rs.getInt("id"), rs.getString("fname"), rs.getString("lname"), rs.getString("email"));
-        }));
+        });
     }
 }
